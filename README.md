@@ -1,6 +1,6 @@
 ## UI-CTX
 
-### 1. Get static resources
+### 1. Get UI-layer knowledge
 Run main of ApkParser with parameters:
 ```
 -i ./Data/DemoApk/demo.apk -o ./Data/DemoApk/demo
@@ -18,7 +18,7 @@ Parse and dump app resources
  -r,--rewrite                rewrite existing data
 ```
 
-### 2. Get call graph
+### 2. Get code-layer knowledge
 Run main of CodeAnalyzer with parameters:
 ```
 -p <path-to-android-platforms> -i ./Data/DemoApk/demo.apk -o ./Data/DemoApk/demo
@@ -46,11 +46,11 @@ Build KG for apps or summarize behaviors
  -sf,--save control flow         Save control flow information
  -t,--soot_thread <arg>          Threads used for soot
  -tcb,--timeout_callback <arg>   Time out for soot calculate callback
-                                 (unit: min, 0 to default)
+                                 (unit: min, default: 0 - no limit)
  -tdf,--timeout_dataflow <arg>   Time out for soot track dataflow (unit:
-                                 min, 0 to default)
+                                 min, default: 0 - no limit)
  -tpr,--timeout_path <arg>       Time out for soot reconstruct path (unit:
-                                 min, 0 to default)
+                                 min, default: 0 - no limit)
 ```
 
 Note: Android platform files are available on https://github.com/Sable/android-platforms.
