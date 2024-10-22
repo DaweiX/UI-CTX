@@ -365,7 +365,8 @@ public class CodeParser {
                         log.warning(String.format("cannot find soot class: %s", className));
                         continue;
                     }
-                    SootMethod method = klass.getMethod(methodName);
+                    SootMethod method = klass.getMethodUnsafe(methodName);
+                    if (method == null) continue;
                     if (!method.hasActiveBody()) continue;
                     Set<Tuple2<String, String>> targetIdNames = class2IdName.get(className);
                     if (targetIdNames == null) {

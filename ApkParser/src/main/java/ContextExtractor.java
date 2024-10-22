@@ -55,8 +55,10 @@ public class ContextExtractor {
         }
         this.draws = new ArrayList<>();
         this.drawableMap = new HashMap<>();
-        for (ARSCFileParser.AbstractResource drawable : drawables) {
-            drawableMap.put(String.valueOf(drawable.getResourceID()), drawable.getResourceName());
+        if (!(drawables == null)) {
+            for (ARSCFileParser.AbstractResource drawable : drawables) {
+                drawableMap.put(String.valueOf(drawable.getResourceID()), drawable.getResourceName());
+            }
         }
         // load included layouts
         Path subLayoutJson = Paths.get(this.workFolder, "sub_layout.json").toAbsolutePath();

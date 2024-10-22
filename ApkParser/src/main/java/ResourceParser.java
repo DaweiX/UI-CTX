@@ -62,7 +62,8 @@ public class ResourceParser {
             XMLWriter writer = new XMLWriter(outputStream, format);
             writer.write(DocumentHelper.parseText(aXmlParser.toString()));
             writer.close();
-        } catch (IOException | XmlPullParserException | DocumentException e) {
+        } catch (IOException | XmlPullParserException | 
+                 DocumentException | RuntimeException e) {
             logger.error(e.toString());
         }
     }
@@ -158,7 +159,12 @@ public class ResourceParser {
         if (arscFileParser == null) {
             arscFileParser = new ARSCFileParser();
         }
-        arscFileParser.parse(apk);
+        try {
+            arscFileParser.parse(apk);
+        } catch (Exception ignored) {
+            logger.error("bad arsc file format");
+            return;
+        }
         ARSCFileParser.ResPackage c = arscFileParser.getPackages().get(0);
         // values/public.xml
         String publicXML = Paths.get(outPath, VALUES_FOLDER, "public.xml").toAbsolutePath().toString();
