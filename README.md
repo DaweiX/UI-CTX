@@ -119,3 +119,5 @@ options:
 ```
 
 Driver scripts for large-scale analysis can be found in `Scripts/driver`.
+
+We also provide the parsed app data for 10K+ apps on https://figshare.com/articles/dataset/UICTX_Demo_Data/27266934?file=49891650.
