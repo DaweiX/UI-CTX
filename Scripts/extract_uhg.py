@@ -466,7 +466,9 @@ class BehaviorProcessor:
             parent_tbd = []
             add_info_file = join(self._work_path, "add_info.json")
             with open(add_info_file, mode="r", encoding="utf-8") as f:
-                sne = json.load(f)["switchEdges"]
+                obj = json.load(f)
+                sne = obj["switchEdges"]
+                the = obj["threadEdges"]
 
             sne_id2keys = {}
             for _uxid in sne:
@@ -497,6 +499,16 @@ class BehaviorProcessor:
                                 entry = sne[uxid_candidate]
                                 print(f"determine layout: {uxid} -> {uxid_candidate}")
                                 break
+
+            # handle thread
+            if uxid in the:
+                entry_the = []
+                for ee in the[uxid]:
+                    entry_the.append({
+                        "_1": ee["_1"],
+                        "_2": f"<{ee['_2'][4: -4]}>"
+                    })
+                entry.extend(entry_the)
 
             case_edges = []
             for ii, n in enumerate(entry):
