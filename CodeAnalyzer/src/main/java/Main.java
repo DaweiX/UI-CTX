@@ -89,7 +89,7 @@ public class Main {
     static boolean singleApk;
     static Map<String, HashMap<String, HashSet<String>>> events;
 
-    public static void main(String[] args) throws ParseException, IOException, URISyntaxException {
+    public static void main(String[] args) throws ParseException, IOException {
         int code = initCmdOptions(args);
         if (code != 0) {
             return;
@@ -132,9 +132,6 @@ public class Main {
         } else {
             System.out.println("output path (exists): " + outRootPath);
         }
-
-        // use StubDroid (with the summaries)
-        lazySummaryProvider = new LazySummaryProvider("summariesManual");
 
         if (!singleApk) {
             initLogger();
@@ -711,11 +708,11 @@ public class Main {
         log.info("config soot ready");
     }
 
-    public static SetupApplication configApp(String apk, InfoflowConfiguration.CallgraphAlgorithm algo) 
-            throws URISyntaxException, XMLStreamException {
+    public static SetupApplication configApp(String apk, InfoflowConfiguration.CallgraphAlgorithm algo)
+            throws URISyntaxException, XMLStreamException, IOException {
         InfoflowAndroidConfiguration config = new InfoflowAndroidConfiguration();
-        config.getAnalysisFileConfig().setAndroidPlatformDir(ANDROID_JARS);
-        config.getAnalysisFileConfig().setTargetAPKFile(apk);
+        config.getAnalysisFileConfig().setAndroidPlatformDir(new File(ANDROID_JARS));
+        config.getAnalysisFileConfig().setTargetAPKFile(new File(apk));
         config.setMaxThreadNum(SOOT_CG_THREAD_NUM);
         config.setSootIntegrationMode(InfoflowConfiguration.SootIntegrationMode.UseExistingInstance);
         config.getPathConfiguration().setPathReconstructionMode(InfoflowConfiguration.PathReconstructionMode.Precise);
@@ -725,7 +722,7 @@ public class Main {
         // start data flow from all findViewById
         config.getSourceSinkConfig().setLayoutMatchingMode(InfoflowConfiguration.LayoutMatchingMode.MatchAll);
         config.getSourceSinkConfig().addSinkCategory(
-                new CategoryDefinition(CategoryDefinition.CATEGORY.ALL),
+                new CategoryDefinition(CategoryDefinition.ALL_CATEGORIES.getID()),
                 InfoflowConfiguration.CategoryMode.Include);
        
         config.setCallgraphAlgorithm(algo);
@@ -764,13 +761,13 @@ public class Main {
         analyzer.getConfig().setCodeEliminationMode(InfoflowConfiguration.CodeEliminationMode.NoCodeElimination);
 
         if (cmd.hasOption(OPTION_SAVE_FLOW)) {
+            // init taint wrapper
+            lazySummaryProvider = new LazySummaryProvider("summariesManual");
+            SummaryTaintWrapper taintPropagationWrapper = new SummaryTaintWrapper(lazySummaryProvider);
+            analyzer.setTaintWrapper(taintPropagationWrapper);
             String flowFile = Paths.get(currentOutPath, FLOW_FILE_NAME).toAbsolutePath().toString();
             analyzer.getConfig().getAnalysisFileConfig().setOutputFile(flowFile);
         }
-
-        // init taint wrapper
-         SummaryTaintWrapper taintPropagationWrapper = new SummaryTaintWrapper(lazySummaryProvider);
-         analyzer.setTaintWrapper(taintPropagationWrapper);
 
         // disable exception tracking can make the analysis faster
         analyzer.getConfig().setEnableExceptionTracking(false);

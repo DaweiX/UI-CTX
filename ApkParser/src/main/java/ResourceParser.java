@@ -9,7 +9,6 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xmlpull.v1.XmlPullParserException;
 import soot.jimple.infoflow.android.axml.AXmlDocument;
 import soot.jimple.infoflow.android.axml.parsers.AXML20Parser;
 import soot.jimple.infoflow.android.manifest.ProcessManifest;
@@ -62,7 +61,7 @@ public class ResourceParser {
             XMLWriter writer = new XMLWriter(outputStream, format);
             writer.write(DocumentHelper.parseText(aXmlParser.toString()));
             writer.close();
-        } catch (IOException | XmlPullParserException | 
+        } catch (IOException |
                  DocumentException | RuntimeException e) {
             logger.error(e.toString());
         }
@@ -160,7 +159,7 @@ public class ResourceParser {
             arscFileParser = new ARSCFileParser();
         }
         try {
-            arscFileParser.parse(apk);
+            arscFileParser.parse(new File(apk));
         } catch (Exception ignored) {
             logger.error("bad arsc file format");
             return;
